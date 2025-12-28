@@ -1,0 +1,1 @@
+// validateImageFile(file)
