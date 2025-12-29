@@ -15,16 +15,19 @@ import { collection as colRef } from "firebase/firestore";
 
 const col = collection(db, "categories");
 
+// Use client time for stable sorting + server time for audit
 export async function createCategory(data) {
   const res = await addDoc(col, {
     ...data,
-    createdAt: serverTimestamp(),
+    createdAtMs: Date.now(),       // ✅ stable for orderBy immediately
+    createdAt: serverTimestamp(),  // ✅ real server timestamp
   });
   return res.id;
 }
 
 export async function listCategories() {
-  const q = query(col, orderBy("createdAt", "desc"));
+  // Sort by createdAtMs instead of serverTimestamp field
+  const q = query(col, orderBy("createdAtMs", "desc"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }

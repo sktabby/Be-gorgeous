@@ -56,37 +56,7 @@ export default function PublicLayout() {
 
         <Outlet />
 
-        <footer className="footer">
-          <div className="container footerGrid">
-            <div className="footerBrand">
-              <img src="/logo.png" alt="Begorgeous" />
-              <div>
-                <div className="footerTitle">Begorgeous</div>
-                <div className="footerSub">Pink & white • Elegant & premium</div>
-              </div>
-            </div>
-
-            <div className="footerLinks">
-              <a href="/#collections">Collections</a>
-              <a href="/#featured">Featured</a>
-              <a href="/#care">Care</a>
-              <a href="/cart">Cart</a>
-            </div>
-
-            <div className="footerCta">
-              <button className="btn primary" onClick={() => nav(ROUTES.CART)}>
-                Order via Cart
-              </button>
-              <button className="btn ghost" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-                Back to top
-              </button>
-            </div>
-          </div>
-
-          <div className="container footerBottom">
-            © {new Date().getFullYear()} Begorgeous. All rights reserved.
-          </div>
-        </footer>
+       
       </div>
 
       <Modal open={toast.open} text={toast.text} />

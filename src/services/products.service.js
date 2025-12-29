@@ -19,7 +19,8 @@ const col = collection(db, "products");
 export async function createProduct(data) {
   const res = await addDoc(col, {
     ...data,
-    createdAt: serverTimestamp(),
+    createdAtMs: Date.now(),       // ✅ stable ordering
+    createdAt: serverTimestamp(),  // ✅ server truth
   });
   return res.id;
 }
@@ -39,20 +40,28 @@ export async function getProductById(id) {
 }
 
 export async function listProducts() {
-  const q = query(col, orderBy("createdAt", "desc"));
+  const q = query(col, orderBy("createdAtMs", "desc"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
 export async function listByCategory(categoryId) {
-  // ⚠️ If Firestore asks for an index, it will show a link in console. Create it once.
-  const q = query(col, where("categoryId", "==", categoryId), orderBy("createdAt", "desc"));
+  const q = query(
+    col,
+    where("categoryId", "==", categoryId),
+    orderBy("createdAtMs", "desc")
+  );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
 export async function listFeatured(max = 6) {
-  const q = query(col, where("featured", "==", true), orderBy("createdAt", "desc"), limit(max));
+  const q = query(
+    col,
+    where("featured", "==", true),
+    orderBy("createdAtMs", "desc"),
+    limit(max)
+  );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }

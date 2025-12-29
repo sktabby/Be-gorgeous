@@ -16,7 +16,7 @@ export default function Home() {
   const nav = useNavigate();
   const [cats, setCats] = useState([]);
   const [featured, setFeatured] = useState([]);
-  const heroImg = "/sample.png";
+  const heroImg = "/sample.png../../assets/images/sample.png";
 
   useEffect(() => {
     (async () => {
@@ -54,7 +54,7 @@ export default function Home() {
         <div className="divider" />
       </div>
 
-      <Testimonials />
+   
 
       <FooterCTA
         onExplore={() =>
