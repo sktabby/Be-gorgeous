@@ -34,7 +34,7 @@ export default function WhyUs() {
             fontSize: "30px",
             fontWeight: 900,
             letterSpacing: "-0.015em",
-            color: "#1c1c1c",
+            color: "#493628",
           }}
         >
           Care & Delivery
@@ -46,8 +46,8 @@ export default function WhyUs() {
             marginTop: 10,
             padding: "6px 14px",
             borderRadius: 999,
-            background: "rgba(255,79,163,0.12)",
-            color: "#ff4fa3",
+            background: "rgba(214, 192, 179, 0.45)",
+            color: "#493628",
             fontSize: 13,
             fontWeight: 700,
           }}
@@ -71,21 +71,20 @@ export default function WhyUs() {
               borderRadius: 20,
               padding: "20px 18px",
               background: "#fff",
-              border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-              transition:
-                "transform 0.35s ease, box-shadow 0.35s ease",
+              border: "1px solid rgba(171, 136, 109, 0.20)",
+              boxShadow: "0 10px 30px rgba(73, 54, 40, 0.10)",
+              transition: "transform 0.35s ease, box-shadow 0.35s ease",
               animation: `fadeUp 0.6s ease ${i * 0.12}s both`,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-6px)";
               e.currentTarget.style.boxShadow =
-                "0 18px 45px rgba(255,79,163,0.18)";
+                "0 18px 45px rgba(73, 54, 40, 0.16)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow =
-                "0 10px 30px rgba(0,0,0,0.06)";
+                "0 10px 30px rgba(73, 54, 40, 0.10)";
             }}
           >
             {/* ICON */}
@@ -94,8 +93,8 @@ export default function WhyUs() {
                 width: 44,
                 height: 44,
                 borderRadius: "50%",
-                background: "rgba(255,79,163,0.14)",
-                color: "#ff4fa3",
+                background: "rgba(214, 192, 179, 0.55)",
+                color: "#493628",
                 display: "grid",
                 placeItems: "center",
                 fontSize: 18,
@@ -111,6 +110,7 @@ export default function WhyUs() {
                 fontWeight: 900,
                 fontSize: 16,
                 marginBottom: 6,
+                color: "#493628",
               }}
             >
               {x.t}
@@ -120,7 +120,7 @@ export default function WhyUs() {
               style={{
                 fontSize: 14,
                 lineHeight: 1.65,
-                color: "#6f6f6f",
+                color: "rgba(73, 54, 40, 0.72)",
               }}
             >
               {x.d}
@@ -132,14 +132,8 @@ export default function WhyUs() {
       {/* ANIMATIONS */}
       <style>{`
         @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(14px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </section>

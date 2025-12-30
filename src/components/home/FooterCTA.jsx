@@ -16,8 +16,8 @@ export default function FooterCTA({ onExplore, onFeatured }) {
           borderRadius: 26,
           padding: "clamp(20px, 4vw, 36px)",
           background: "#fff",
-          border: "1px solid rgba(0,0,0,0.06)",
-          boxShadow: "0 18px 50px rgba(0,0,0,0.06)",
+          border: "1px solid rgba(171, 136, 109, 0.20)",
+          boxShadow: "0 18px 50px rgba(73, 54, 40, 0.10)",
         }}
       >
         {/* TOP BAR */}
@@ -35,8 +35,8 @@ export default function FooterCTA({ onExplore, onFeatured }) {
             style={{
               padding: "6px 14px",
               borderRadius: 999,
-              background: "rgba(255,79,163,0.12)",
-              color: "#ff4fa3",
+              background: "rgba(214, 192, 179, 0.45)",
+              color: "#493628",
               fontSize: 13,
               fontWeight: 700,
             }}
@@ -46,9 +46,7 @@ export default function FooterCTA({ onExplore, onFeatured }) {
 
           <button
             className="btn ghost"
-            onClick={() =>
-              window.scrollTo({ top: 0, behavior: "smooth" })
-            }
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
             ↑ Back to top
           </button>
@@ -70,6 +68,7 @@ export default function FooterCTA({ onExplore, onFeatured }) {
                 fontSize: "26px",
                 fontWeight: 900,
                 letterSpacing: "-0.015em",
+                color: "#493628",
               }}
             >
               Find your next favorite piece
@@ -80,11 +79,11 @@ export default function FooterCTA({ onExplore, onFeatured }) {
                 marginTop: 10,
                 maxWidth: 520,
                 lineHeight: 1.6,
-                color: "#6f6f6f",
+                color: "rgba(73, 54, 40, 0.72)",
               }}
             >
-              Explore curated collections, choose what you love, and place
-              your order effortlessly.
+              Explore curated collections, choose what you love, and place your
+              order effortlessly.
             </p>
 
             <div
@@ -110,21 +109,21 @@ export default function FooterCTA({ onExplore, onFeatured }) {
               display: "grid",
               gap: 14,
               fontSize: 14,
-              color: "#6f6f6f",
+              color: "rgba(73, 54, 40, 0.72)",
             }}
           >
             <div>
-              <strong style={{ color: "#1c1c1c" }}>Ordering</strong>
+              <strong style={{ color: "#493628" }}>Ordering</strong>
               <div>Cart → Checkout → WhatsApp</div>
             </div>
 
             <div>
-              <strong style={{ color: "#1c1c1c" }}>Support</strong>
+              <strong style={{ color: "#493628" }}>Support</strong>
               <div>Quick replies on WhatsApp</div>
             </div>
 
             <div>
-              <strong style={{ color: "#1c1c1c" }}>Contact</strong>
+              <strong style={{ color: "#493628" }}>Contact</strong>
               <div>WhatsApp: +91 9XXXXXXXXX</div>
               <div>Email: support@begorgeous.in</div>
             </div>
@@ -138,7 +137,7 @@ export default function FooterCTA({ onExplore, onFeatured }) {
           marginTop: 18,
           textAlign: "center",
           fontSize: 13,
-          color: "#9a9a9a",
+          color: "rgba(73, 54, 40, 0.55)",
         }}
       >
         © {new Date().getFullYear()} BeGorgeous • Crafted with care

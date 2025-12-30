@@ -13,16 +13,16 @@ export default function Hero() {
   }, []);
 
   return (
-    <section style={{ background: "#fff", padding: "28px 0" }}>
+    <section style={{ background: "#E4E0E1", padding: "28px 0" }}>
       <div style={{ maxWidth: "1120px", margin: "0 auto", padding: "0 16px" }}>
         {/* OUTER FRAME */}
         <div
           style={{
             borderRadius: "24px",
-            border: "1px solid rgba(0,0,0,0.08)",
+            border: "1px solid rgba(171, 136, 109, 0.22)",
             padding: "24px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-            background: "#fff",
+            boxShadow: "0 10px 30px rgba(73, 54, 40, 0.10)",
+            background: "#ffffff",
           }}
         >
           <div
@@ -40,8 +40,8 @@ export default function Hero() {
                   display: "inline-block",
                   padding: "6px 14px",
                   borderRadius: "999px",
-                  background: "#ffe4f0",
-                  color: "#ff4fa3",
+                  background: "rgba(214, 192, 179, 0.55)",
+                  color: "#493628",
                   fontSize: "13px",
                   fontWeight: 700,
                 }}
@@ -56,10 +56,10 @@ export default function Hero() {
                   lineHeight: 1.05,
                   letterSpacing: "-0.02em",
                   fontWeight: 800,
-                  color: "#1c1c1c",
+                  color: "#493628",
                 }}
               >
-                Be <span style={{ color: "#ff4fa3" }}>gorgeous</span>
+                Be <span style={{ color: "#AB886D" }}>gorgeous</span>
                 <br />
                 in every moment
               </h1>
@@ -69,7 +69,7 @@ export default function Hero() {
                   marginTop: "14px",
                   maxWidth: "520px",
                   lineHeight: 1.7,
-                  color: "#6f6f6f",
+                  color: "rgba(73, 54, 40, 0.72)",
                   fontSize: "15.5px",
                 }}
               >
@@ -91,11 +91,11 @@ export default function Hero() {
                   style={{
                     padding: "12px 22px",
                     borderRadius: "999px",
-                    background: "#ff4fa3",
+                    background: "#AB886D",
                     color: "#fff",
                     fontWeight: 700,
                     textDecoration: "none",
-                    boxShadow: "0 10px 24px rgba(255,79,163,0.25)",
+                    boxShadow: "0 10px 24px rgba(73, 54, 40, 0.18)",
                   }}
                 >
                   Explore collections
@@ -106,11 +106,11 @@ export default function Hero() {
                   style={{
                     padding: "12px 22px",
                     borderRadius: "999px",
-                    background: "#f4f4f4",
-                    color: "#1c1c1c",
+                    background: "rgba(214, 192, 179, 0.35)",
+                    color: "#493628",
                     fontWeight: 700,
                     textDecoration: "none",
-                    border: "1px solid rgba(0,0,0,0.08)",
+                    border: "1px solid rgba(171, 136, 109, 0.22)",
                   }}
                 >
                   Featured picks
@@ -135,17 +135,17 @@ export default function Hero() {
                     <div
                       key={t}
                       style={{
-                        border: "1px solid rgba(0,0,0,0.08)",
+                        border: "1px solid rgba(171, 136, 109, 0.22)",
                         borderRadius: "16px",
                         padding: "14px",
                         background: "#fff",
                       }}
                     >
-                      <div style={{ fontWeight: 700 }}>{t}</div>
+                      <div style={{ fontWeight: 700, color: "#493628" }}>{t}</div>
                       <div
                         style={{
                           fontSize: "13px",
-                          color: "#777",
+                          color: "rgba(73, 54, 40, 0.62)",
                           marginTop: "4px",
                         }}
                       >
@@ -161,18 +161,17 @@ export default function Hero() {
                 <div
                   style={{
                     marginTop: "22px",
-                    border: "1px solid rgba(255, 32, 214, 0.08)",
+                    border: "1px solid rgba(171, 136, 109, 0.22)",
                     borderRadius: "10px",
                     padding: "5px",
-                    background: "#ffffffff",
-                    textAlign:"center"
+                    background: "#ffffff",
+                    textAlign: "center",
                   }}
                 >
-                  
                   <div
                     style={{
                       fontSize: "13px",
-                      color: "#949494ff",
+                      color: "rgba(73, 54, 40, 0.60)",
                       marginTop: "4px",
                     }}
                   >
@@ -188,8 +187,8 @@ export default function Hero() {
                 style={{
                   borderRadius: "22px",
                   overflow: "hidden",
-                  border: "1px solid rgba(0,0,0,0.08)",
-                  background: "#fafafa",
+                  border: "1px solid rgba(171, 136, 109, 0.22)",
+                  background: "rgba(228, 224, 225, 0.50)",
                 }}
               >
                 <img

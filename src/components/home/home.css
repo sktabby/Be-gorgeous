@@ -1,21 +1,24 @@
 :root {
-  --bg: #ffffff;
+  /* Base surfaces */
+  --bg: #E4E0E1;                  /* was white */
   --card: #ffffff;
-  --border: rgba(0,0,0,0.08);
+  --border: rgba(171, 136, 109, 0.22);  /* antique border */
 
-  --text: #1c1c1c;
-  --muted: #6f6f6f;
+  /* Text */
+  --text: #493628;                /* deep brown */
+  --muted: rgba(73, 54, 40, 0.62);
 
-  --pink: #ff5fa2;
-  --pink-soft: #ffe4f0;
+  /* Accent (replace pink) */
+  --pink: #AB886D;                /* bronze */
+  --pink-soft: rgba(214, 192, 179, 0.42); /* warm clay soft */
 
   --radius: 18px;
-  --shadow: 0 10px 30px rgba(0,0,0,0.08);
+  --shadow: 0 10px 30px rgba(73, 54, 40, 0.10);
 }
 
 /* Base */
 .bgx {
-  background: #ffffff;
+  background: var(--bg);
   color: var(--text);
 }
 
@@ -31,7 +34,7 @@
 
 .divider {
   height: 1px;
-  background: #eee;
+  background: rgba(171, 136, 109, 0.22);
   margin: 24px 0;
 }
 
@@ -75,7 +78,7 @@
 }
 
 .btn.ghost {
-  background: #f5f5f5;
+  background: rgba(214, 192, 179, 0.28);
 }
 
 /* Hero */
@@ -99,7 +102,7 @@
   display: inline-block;
   padding: 8px 14px;
   background: var(--pink-soft);
-  color: var(--pink);
+  color: var(--text);
   border-radius: 999px;
   font-size: 14px;
   font-weight: 700;
@@ -135,7 +138,7 @@
   justify-content: space-between;
   padding: 10px 12px;
   border-radius: 12px;
-  background: #fafafa;
+  background: rgba(228, 224, 225, 0.55);
   margin-bottom: 8px;
 }
 
@@ -199,7 +202,7 @@
 }
 
 .ctaSection {
-  background: #fafafa;
+  background: rgba(228, 224, 225, 0.55);
   padding: 32px 0;
   border-radius: 24px;
 }
@@ -211,9 +214,9 @@
   margin-top: 20px;
 }
 
-/* 🔥 FORCE PURE WHITE BACKGROUND ON HOME PAGE (DESKTOP + MOBILE) */
+/* 🔥 FORCE THEME BACKGROUND ON HOME PAGE (DESKTOP + MOBILE) */
 html,
 body,
 #root {
-  background: #ffffff !important;
+  background: var(--bg) !important;
 }

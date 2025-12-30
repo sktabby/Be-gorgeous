@@ -1,7 +1,7 @@
 import React from "react";
 import ProductCard from "../products/ProductCard";
 
-export default function FeaturedProducts({ featured, onGoCart }) {
+export default function FeaturedProducts({ featured = [], onGoCart }) {
   return (
     <section
       className="container section"
@@ -12,7 +12,6 @@ export default function FeaturedProducts({ featured, onGoCart }) {
         paddingRight: "clamp(12px, 4vw, 0px)",
       }}
     >
-      {/* HEADER — SAME PATTERN AS COLLECTIONS */}
       <div style={{ marginBottom: 20 }}>
         <h2
           className="h2"
@@ -20,7 +19,7 @@ export default function FeaturedProducts({ featured, onGoCart }) {
             fontSize: "30px",
             fontWeight: 900,
             letterSpacing: "-0.015em",
-            color: "#1c1c1c",
+            color: "#493628",
           }}
         >
           Featured
@@ -32,8 +31,8 @@ export default function FeaturedProducts({ featured, onGoCart }) {
             marginTop: 10,
             padding: "6px 14px",
             borderRadius: 999,
-            background: "rgba(255,79,163,0.12)",
-            color: "#ff4fa3",
+            background: "rgba(214, 192, 179, 0.45)",
+            color: "#493628",
             fontSize: 13,
             fontWeight: 700,
           }}
@@ -42,14 +41,12 @@ export default function FeaturedProducts({ featured, onGoCart }) {
         </span>
       </div>
 
-      {/* ACTION */}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
         <button className="btn ghost" onClick={onGoCart}>
           Go to cart
         </button>
       </div>
 
-      {/* PRODUCTS */}
       <div className="grid3">
         {featured.map((p) => (
           <ProductCard key={p.id} p={p} />

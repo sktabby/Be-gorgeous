@@ -28,6 +28,11 @@ export default function Home() {
     })();
   }, []);
 
+  useEffect(() => {
+  console.log("FEATURED:", featured);
+}, [featured]);
+
+
   return (
     <div className="bgx">
       <Hero heroImg={heroImg} />

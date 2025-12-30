@@ -1,0 +1,12 @@
+git status
+git stash
+git pull origin main
+git stash pop
+
+to pull the others work follow this command without loosing your local work 
+
+to push your changes to github use the below commands
+
+git add .
+git commit -m "commited by aqsa"
+git push
