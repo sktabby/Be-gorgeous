@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { ROUTES } from "../app/routes";
 import { getCart } from "../store/cart.store";
 import Modal from "../components/common/Modal";
+import logo from "../assets/images/logo1.jpeg";
+
 
 export default function PublicLayout() {
   const nav = useNavigate();
@@ -28,7 +30,7 @@ export default function PublicLayout() {
         <div className="topbar">
           <div className="container nav">
             <div className="brand" onClick={() => nav(ROUTES.HOME)} role="button" tabIndex={0}>
-              <img src="/logo.png" alt="Begorgeous" />
+              <img src={logo} alt="Begorgeous" className="brandLogo" />
               <div>
                 <div className="brandTitle">Begorgeous</div>
                 <div className="brandSub">Premium jewellery boutique</div>

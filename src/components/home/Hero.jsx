@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import sampleImg from "../../assets/images/sample.png";
+import sampleImg from "../../assets/images/Hero_img.jpg";
 
 export default function Hero() {
   const [isDesktop, setIsDesktop] = useState(

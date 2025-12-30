@@ -16,7 +16,7 @@ export default function Home() {
   const nav = useNavigate();
   const [cats, setCats] = useState([]);
   const [featured, setFeatured] = useState([]);
-  const heroImg = "/sample.png../../assets/images/sample.png";
+  const heroImg = "/sample.png../../assets/images/Hero_img.jpg";
 
   useEffect(() => {
     (async () => {
