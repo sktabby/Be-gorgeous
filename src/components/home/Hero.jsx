@@ -21,8 +21,11 @@ export default function Hero() {
             borderRadius: "24px",
             border: "1px solid rgba(171, 136, 109, 0.22)",
             padding: "24px",
-            boxShadow: "0 10px 30px rgba(73, 54, 40, 0.10)",
-            background: "#ffffff",
+            background: "rgba(255,255,255,0.55)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(18px)",
+            boxShadow:
+              "0 18px 55px rgba(73, 54, 40, 0.12), inset 0 1px 0 rgba(255,255,255,0.55)",
           }}
         >
           <div
@@ -33,20 +36,23 @@ export default function Hero() {
               alignItems: "center",
             }}
           >
-            {/* LEFT CONTENT (ALWAYS VISIBLE) */}
+            {/* LEFT CONTENT */}
             <div>
               <span
                 style={{
                   display: "inline-block",
                   padding: "6px 14px",
                   borderRadius: "999px",
-                  background: "rgba(214, 192, 179, 0.55)",
+                  background:
+                    "linear-gradient(180deg, rgba(214,192,179,0.65), rgba(214,192,179,0.35))",
                   color: "#493628",
                   fontSize: "13px",
-                  fontWeight: 700,
+                  fontWeight: 800,
+                  border: "1px solid rgba(171, 136, 109, 0.22)",
+                  boxShadow: "0 10px 22px rgba(73, 54, 40, 0.08)",
                 }}
               >
-                luxury jewellery
+                anti-tarnish • everyday shine
               </span>
 
               <h1
@@ -64,18 +70,22 @@ export default function Hero() {
                 in every moment
               </h1>
 
-              <p
-                style={{
-                  marginTop: "14px",
-                  maxWidth: "520px",
-                  lineHeight: 1.7,
-                  color: "rgba(73, 54, 40, 0.72)",
-                  fontSize: "15.5px",
-                }}
-              >
-                Elegant rings, earrings, necklaces, bangles and bridal sets —
-                crafted for timeless beauty and everyday grace.
-              </p>
+              {/* DESCRIPTION — DESKTOP ONLY */}
+              {isDesktop && (
+                <p
+                  style={{
+                    marginTop: "14px",
+                    maxWidth: "520px",
+                    lineHeight: 1.7,
+                    color: "rgba(73, 54, 40, 0.72)",
+                    fontSize: "15.5px",
+                  }}
+                >
+                  Premium anti-tarnish jewellery made for daily wear — rings,
+                  earrings, chains, bangles & sets that keep their glow longer and
+                  look effortless every time you style them.
+                </p>
+              )}
 
               {/* ACTION BUTTONS */}
               <div
@@ -83,112 +93,61 @@ export default function Hero() {
                   display: "flex",
                   gap: "12px",
                   marginTop: "22px",
-                  flexWrap: "wrap",
+                  flexWrap: "nowrap",
                 }}
               >
                 <a
                   href="#collections"
                   style={{
-                    padding: "12px 22px",
+                    flex: 1,
+                    padding: "12px 0",
+                    textAlign: "center",
                     borderRadius: "999px",
-                    background: "#AB886D",
+                    background: "linear-gradient(180deg, #AB886D, #7B563B)",
                     color: "#fff",
-                    fontWeight: 700,
+                    fontWeight: 800,
                     textDecoration: "none",
-                    boxShadow: "0 10px 24px rgba(73, 54, 40, 0.18)",
+                    boxShadow: "0 12px 28px rgba(73, 54, 40, 0.22)",
+                    border: "1px solid rgba(171, 136, 109, 0.18)",
                   }}
                 >
-                  Explore collections
+                  Explore
                 </a>
 
                 <a
                   href="#featured"
                   style={{
-                    padding: "12px 22px",
+                    flex: 1,
+                    padding: "12px 0",
+                    textAlign: "center",
                     borderRadius: "999px",
-                    background: "rgba(214, 192, 179, 0.35)",
+                    background: "rgba(255,255,255,0.45)",
                     color: "#493628",
-                    fontWeight: 700,
+                    fontWeight: 800,
                     textDecoration: "none",
-                    border: "1px solid rgba(171, 136, 109, 0.22)",
+                    border: "1px solid rgba(171, 136, 109, 0.24)",
+                    backdropFilter: "blur(10px)",
+                    WebkitBackdropFilter: "blur(10px)",
+                    boxShadow: "0 10px 22px rgba(73, 54, 40, 0.10)",
                   }}
                 >
-                  Featured picks
+                  Featured
                 </a>
               </div>
-
-              {/* MINI STATS — DESKTOP */}
-              {isDesktop && (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: "14px",
-                    marginTop: "28px",
-                  }}
-                >
-                  {[
-                    ["New arrivals", "Fresh drops"],
-                    ["Packaging", "Gift-ready"],
-                    ["Ordering", "Fast & simple"],
-                  ].map(([t, s]) => (
-                    <div
-                      key={t}
-                      style={{
-                        border: "1px solid rgba(171, 136, 109, 0.22)",
-                        borderRadius: "16px",
-                        padding: "14px",
-                        background: "#fff",
-                      }}
-                    >
-                      <div style={{ fontWeight: 700, color: "#493628" }}>{t}</div>
-                      <div
-                        style={{
-                          fontSize: "13px",
-                          color: "rgba(73, 54, 40, 0.62)",
-                          marginTop: "4px",
-                        }}
-                      >
-                        {s}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* MINI STAT — MOBILE */}
-              {!isDesktop && (
-                <div
-                  style={{
-                    marginTop: "22px",
-                    border: "1px solid rgba(171, 136, 109, 0.22)",
-                    borderRadius: "10px",
-                    padding: "5px",
-                    background: "#ffffff",
-                    textAlign: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      color: "rgba(73, 54, 40, 0.60)",
-                      marginTop: "4px",
-                    }}
-                  >
-                    order your favorite one now!
-                  </div>
-                </div>
-              )}
             </div>
 
-            {/* RIGHT IMAGE — DESKTOP ONLY */}
+            {/* RIGHT IMAGE — DESKTOP */}
             {isDesktop && (
               <div
                 style={{
                   borderRadius: "22px",
                   overflow: "hidden",
                   border: "1px solid rgba(171, 136, 109, 0.22)",
-                  background: "rgba(228, 224, 225, 0.50)",
+                  background: "rgba(255,255,255,0.45)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  boxShadow:
+                    "0 18px 55px rgba(73, 54, 40, 0.12), inset 0 1px 0 rgba(255,255,255,0.55)",
                 }}
               >
                 <img
@@ -199,8 +158,54 @@ export default function Hero() {
                     aspectRatio: "1 / 1",
                     objectFit: "cover",
                     display: "block",
+                    filter: "saturate(0.98) contrast(1.03)",
                   }}
                 />
+              </div>
+            )}
+
+            {/* MOBILE IMAGE CARD */}
+            {!isDesktop && (
+              <div
+                style={{
+                  marginTop: 10,
+                  borderRadius: 20,
+                  height: 240,
+                  position: "relative",
+                  overflow: "hidden",
+                  backgroundImage: `url(${sampleImg})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  border: "1px solid rgba(171,136,109,0.22)",
+                  boxShadow:
+                    "0 18px 40px rgba(73,54,40,0.18)",
+                }}
+              >
+                {/* gradient overlay */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(to top, rgba(73,54,40,0.65), rgba(73,54,40,0.05))",
+                  }}
+                />
+
+                {/* tagline on image */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 15,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Anti-tarnish jewellery crafted for everyday elegance
+                </div>
               </div>
             )}
           </div>

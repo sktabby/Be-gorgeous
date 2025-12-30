@@ -2,33 +2,31 @@ import React from "react";
 
 export default function FooterCTA({ onExplore, onFeatured }) {
   return (
-    <section
+    <footer
       className="container section"
       style={{
-        margin: "clamp(20px, 4vw, 60px) auto",
-        paddingLeft: "clamp(12px, 4vw, 0px)",
-        paddingRight: "clamp(12px, 4vw, 0px)",
+        marginTop: "clamp(40px, 6vw, 80px)",
+        paddingLeft: "clamp(14px, 4vw, 0px)",
+        paddingRight: "clamp(14px, 4vw, 0px)",
       }}
     >
-      {/* CTA CARD */}
+      {/* FOOTER INNER */}
       <div
         style={{
-          borderRadius: 26,
-          padding: "clamp(20px, 4vw, 36px)",
-          background: "#fff",
-          border: "1px solid rgba(171, 136, 109, 0.20)",
-          boxShadow: "0 18px 50px rgba(73, 54, 40, 0.10)",
+          padding: "clamp(28px, 5vw, 48px) 0",
+          borderTop: "1px solid rgba(171, 136, 109, 0.22)",
+          borderBottom: "1px solid rgba(171, 136, 109, 0.22)",
         }}
       >
-        {/* TOP BAR */}
+        {/* TOP ROW */}
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: 12,
-            marginBottom: 22,
+            gap: 14,
+            marginBottom: 28,
           }}
         >
           <span
@@ -39,6 +37,8 @@ export default function FooterCTA({ onExplore, onFeatured }) {
               color: "#493628",
               fontSize: 13,
               fontWeight: 700,
+              backdropFilter: "blur(6px)",
+              WebkitBackdropFilter: "blur(6px)",
             }}
           >
             Premium • Minimal • Elegant
@@ -52,16 +52,16 @@ export default function FooterCTA({ onExplore, onFeatured }) {
           </button>
         </div>
 
-        {/* MAIN CONTENT */}
+        {/* MAIN FOOTER CONTENT */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: 24,
-            alignItems: "center",
+            gap: 32,
+            alignItems: "start",
           }}
         >
-          {/* LEFT */}
+          {/* LEFT — BRAND CTA */}
           <div>
             <h3
               style={{
@@ -83,7 +83,7 @@ export default function FooterCTA({ onExplore, onFeatured }) {
               }}
             >
               Explore curated collections, choose what you love, and place your
-              order effortlessly.
+              order effortlessly through WhatsApp.
             </p>
 
             <div
@@ -103,11 +103,11 @@ export default function FooterCTA({ onExplore, onFeatured }) {
             </div>
           </div>
 
-          {/* RIGHT — CONTACT & TRUST */}
+          {/* RIGHT — INFO BLOCKS */}
           <div
             style={{
               display: "grid",
-              gap: 14,
+              gap: 16,
               fontSize: 14,
               color: "rgba(73, 54, 40, 0.72)",
             }}
@@ -131,10 +131,10 @@ export default function FooterCTA({ onExplore, onFeatured }) {
         </div>
       </div>
 
-      {/* FOOTER NOTE */}
+      {/* FOOTER BOTTOM */}
       <div
         style={{
-          marginTop: 18,
+          padding: "18px 0",
           textAlign: "center",
           fontSize: 13,
           color: "rgba(73, 54, 40, 0.55)",
@@ -142,6 +142,6 @@ export default function FooterCTA({ onExplore, onFeatured }) {
       >
         © {new Date().getFullYear()} BeGorgeous • Crafted with care
       </div>
-    </section>
+    </footer>
   );
 }

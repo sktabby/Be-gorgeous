@@ -63,81 +63,302 @@ export default function Cart() {
 
   return (
     <div className="container section">
-      <div className="pageHead">
-        <div>
-          <h2 className="h2">Cart</h2>
-          <p className="p">Your selected items.</p>
+      {/* ✅ Single premium card wrapper */}
+      <div className="cartCard">
+        <div className="cartHead">
+          <div>
+            <h2 className="h2" style={{ margin: 0, color: "#493628" }}>
+              Cart
+            </h2>
+            <p className="p" style={{ margin: "6px 0 0", color: "rgba(73,54,40,0.65)" }}>
+              Your selected items.
+            </p>
+          </div>
+
+          <button className="btn ghost cartClearBtn" onClick={onClear}>
+            Clear
+          </button>
         </div>
-        <button className="btn ghost" onClick={onClear}>
-          Clear
-        </button>
+
+        {items.length === 0 ? (
+          <div className="emptyHint" style={{ marginTop: 16 }}>
+            Cart is empty.
+          </div>
+        ) : (
+          <div className="cartInner">
+            {/* LEFT: items */}
+            <div className="cartListNice">
+              {items.map((x) => (
+                <div key={x.id} className="cartItemNice">
+                  <img
+                    className="cartImgNice"
+                    src={x.image || x.img || x.img1 || "/sample.png"}
+                    alt={x.name || "Item"}
+                    loading="lazy"
+                    onError={(e) => (e.currentTarget.src = "/sample.png")}
+                  />
+
+                  <div className="cartInfoNice">
+                    <div className="cartNameNice" title={x.name || x.title || "Item"}>
+                      {x.name || x.title || "Item"}
+                    </div>
+                    <div className="cartPriceNice">₹{x.price}</div>
+                  </div>
+
+                  <div className="qtyNice">
+                    <button
+                      className="qtyBtnNice"
+                      onClick={() => change(x.id, Number(x.qty || 0) - 1)}
+                      disabled={Number(x.qty || 0) <= 1}
+                      title={Number(x.qty || 0) <= 1 ? "Minimum 1" : "Decrease"}
+                      type="button"
+                    >
+                      −
+                    </button>
+                    <div className="qtyNumNice">{x.qty}</div>
+                    <button
+                      className="qtyBtnNice"
+                      onClick={() => change(x.id, Number(x.qty || 0) + 1)}
+                      type="button"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* RIGHT: summary */}
+            <div className="summaryNice">
+              <div className="sumTitleNice">Summary</div>
+
+              <div className="sumRowNice">
+                <span className="muted">Items</span>
+                <span style={{ fontWeight: 900, color: "#493628" }}>{itemCount}</span>
+              </div>
+
+              <div className="sumRowNice">
+                <span className="muted">Total</span>
+                <span className="sumTotalNice">₹{total}</span>
+              </div>
+
+              <button
+                className="btn primary sumCheckoutBtn"
+                style={{ width: "100%", marginTop: 12 }}
+                onClick={onCheckout}
+              >
+                Checkout
+              </button>
+
+              <div className="sumNoteNice">
+                You’ll be redirected to WhatsApp with your order details.
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {items.length === 0 ? (
-        <div className="emptyHint" style={{ marginTop: 16 }}>
-          Cart is empty.
-        </div>
-      ) : (
-        <div className="cartGrid">
-          <div className="cartList">
-            {items.map((x) => (
-              <div key={x.id} className="cartItem">
-                <img
-                  className="cartImg"
-                  src={x.image || x.img || x.img1 || "/sample.png"}
-                  alt={x.name || "Item"}
-                />
-                <div className="cartInfo">
-                  <div className="cartName">{x.name || x.title || "Item"}</div>
-                  <div className="muted">₹{x.price}</div>
-                </div>
+      {/* ✅ Premium styling inside same file (no separate CSS) */}
+      <style>{`
+        .cartCard{
+          border-radius: 22px;
+          border: 1px solid rgba(171, 136, 109, 0.22);
+          background: rgba(255,255,255,0.60);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          box-shadow: 0 18px 55px rgba(73, 54, 40, 0.12), inset 0 1px 0 rgba(255,255,255,0.55);
+          padding: 16px;
+        }
 
-                <div className="qty">
-                  <button
-                    className="qtyBtn"
-                    onClick={() => change(x.id, Number(x.qty || 0) - 1)}
-                    disabled={Number(x.qty || 0) <= 1}
-                    title={Number(x.qty || 0) <= 1 ? "Minimum 1" : "Decrease"}
-                  >
-                    −
-                  </button>
-                  <div className="qtyNum">{x.qty}</div>
-                  <button
-                    className="qtyBtn"
-                    onClick={() => change(x.id, Number(x.qty || 0) + 1)}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        .cartHead{
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(171, 136, 109, 0.16);
+        }
 
-          <div className="summary">
-            <div className="sumTitle">Summary</div>
-            <div className="sumRow">
-              <span className="muted">Items</span>
-              <span>{itemCount}</span>
-            </div>
-            <div className="sumRow">
-              <span className="muted">Total</span>
-              <span className="sumTotal">₹{total}</span>
-            </div>
+        .cartClearBtn{
+          border-radius: 999px;
+          padding: 10px 14px;
+          white-space: nowrap;
+        }
 
-            <button
-              className="btn primary"
-              style={{ width: "100%", marginTop: 12 }}
-              onClick={onCheckout}
-            >
-              Checkout
-            </button>
+        .cartInner{
+          margin-top: 14px;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
 
-            <div className="muted" style={{ marginTop: 8, fontSize: 13 }}>
-              You’ll be redirected to WhatsApp with your order details.
-            </div>
-          </div>
-        </div>
-      )}
+        .cartListNice{
+          display: grid;
+          gap: 12px;
+        }
+
+        .cartItemNice{
+          display: grid;
+          grid-template-columns: 56px 1fr auto;
+          gap: 12px;
+          align-items: center;
+          padding: 12px;
+          border-radius: 18px;
+          border: 1px solid rgba(73, 54, 40, 0.10);
+          background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(214,192,179,0.16));
+          box-shadow: 0 14px 34px rgba(73, 54, 40, 0.10);
+        }
+
+        .cartImgNice{
+          width: 56px;
+          height: 56px;
+          border-radius: 14px;
+          object-fit: cover;
+          border: 1px solid rgba(171, 136, 109, 0.18);
+          background: rgba(214,192,179,0.22);
+          display: block;
+        }
+
+        .cartInfoNice{
+          min-width: 0;
+        }
+
+        .cartNameNice{
+          font-weight: 900;
+          color: #493628;
+          letter-spacing: -0.01em;
+          font-size: 14.8px;
+          line-height: 1.2;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .cartPriceNice{
+          margin-top: 6px;
+          font-weight: 900;
+          color: rgba(73, 54, 40, 0.80);
+          font-size: 13.8px;
+        }
+
+        .qtyNice{
+          display: grid;
+          grid-auto-flow: column;
+          align-items: center;
+          gap: 8px;
+          padding: 6px;
+          border-radius: 999px;
+          border: 1px solid rgba(171, 136, 109, 0.18);
+          background: rgba(255,255,255,0.55);
+          box-shadow: 0 10px 22px rgba(73, 54, 40, 0.08);
+        }
+
+        .qtyBtnNice{
+          width: 34px;
+          height: 34px;
+          border-radius: 999px;
+          border: 1px solid rgba(73, 54, 40, 0.12);
+          background: rgba(255,255,255,0.85);
+          cursor: pointer;
+          font-size: 18px;
+          font-weight: 900;
+          color: #493628;
+          display: grid;
+          place-items: center;
+          transition: transform .12s ease, filter .12s ease;
+        }
+
+        .qtyBtnNice:hover{
+          transform: translateY(-1px);
+          filter: brightness(1.03);
+        }
+
+        .qtyBtnNice:disabled{
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        .qtyNumNice{
+          width: 26px;
+          text-align: center;
+          font-weight: 900;
+          color: #493628;
+        }
+
+        .summaryNice{
+          border-radius: 18px;
+          border: 1px solid rgba(73, 54, 40, 0.10);
+          background: rgba(255,255,255,0.55);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          padding: 14px;
+          box-shadow: 0 14px 40px rgba(73, 54, 40, 0.10);
+        }
+
+        .sumTitleNice{
+          font-weight: 900;
+          color: #493628;
+          letter-spacing: -0.01em;
+          font-size: 16px;
+          margin-bottom: 10px;
+        }
+
+        .sumRowNice{
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          padding: 8px 0;
+        }
+
+        .sumTotalNice{
+          font-weight: 900;
+          color: #493628;
+          font-size: 18px;
+          letter-spacing: -0.01em;
+        }
+
+        .sumCheckoutBtn{
+          border-radius: 999px;
+          padding: 12px 14px;
+          font-weight: 900;
+          box-shadow: 0 14px 30px rgba(73, 54, 40, 0.18);
+        }
+
+        .sumNoteNice{
+          margin-top: 10px;
+          font-size: 13px;
+          color: rgba(73, 54, 40, 0.60);
+          line-height: 1.55;
+        }
+
+        /* ✅ Desktop: still inside one card, but 2 columns inside */
+        @media (min-width: 900px){
+          .cartCard{ padding: 18px; }
+          .cartInner{
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 16px;
+            align-items: start;
+          }
+          .summaryNice{
+            position: sticky;
+            top: 88px;
+          }
+        }
+
+        /* ✅ Mobile tighter */
+        @media (max-width: 420px){
+          .cartCard{ padding: 14px; border-radius: 20px; }
+          .cartItemNice{
+            grid-template-columns: 52px 1fr auto;
+            padding: 10px;
+            border-radius: 16px;
+          }
+          .cartImgNice{ width: 52px; height: 52px; border-radius: 13px; }
+          .qtyBtnNice{ width: 32px; height: 32px; }
+          .sumCheckoutBtn{ padding: 11px 12px; font-size: 13px; }
+        }
+      `}</style>
     </div>
   );
 }
