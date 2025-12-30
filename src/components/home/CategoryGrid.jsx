@@ -1,4 +1,6 @@
-export default function CategoryGrid({ cats, onOpenCategory }) {
+import React from "react";
+
+export default function CategoryGrid({ cats = [], onOpenCategory }) {
   return (
     <section
       className="container section"
@@ -9,7 +11,7 @@ export default function CategoryGrid({ cats, onOpenCategory }) {
         paddingRight: "clamp(12px, 4vw, 0px)",
       }}
     >
-      {/* BEAUTIFUL HEADER (HERO-LIKE) */}
+      {/* HEADER */}
       <div style={{ marginBottom: 20 }}>
         <h2
           className="h2"
@@ -39,36 +41,45 @@ export default function CategoryGrid({ cats, onOpenCategory }) {
         </span>
       </div>
 
-      {/* CATEGORY ROW */}
-      {cats.length > 0 ? (
-        <div className="rowScroll">
+      {cats?.length > 0 ? (
+        <div className="rowScroll catsRow">
           {cats.map((c) => (
             <button
               key={c.id}
-              className="catCard"
-              onClick={() => onOpenCategory(c.id)}
+              className="catCardMini"
+              onClick={() => onOpenCategory?.(c.id)}
               title={c.name}
-              style={{
-                transition: "transform 0.25s ease, box-shadow 0.25s ease",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.transform = "translateY(-3px)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.transform = "translateY(0)")
-              }
+              type="button"
             >
-              <div className="catTop">
-                <div className="catName">{c.name}</div>
-                <div className="catArrow">→</div>
+              {/* LEFT: DP ICON */}
+              <div className="catDpWrap" aria-hidden="true">
+                <img
+                  className="catDp"
+                  src={c.imageUrl || "/sample.png"}
+                  alt=""
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = "/sample.png";
+                  }}
+                />
               </div>
 
-              <div className="catNote">{c.note || "Explore premium picks"}</div>
+              {/* CENTER: TEXT */}
+              <div className="catText">
+                <div className="catNameRow">{c.name}</div>
+                <div className="catNoteRow">
+                  {c.note?.trim() ? c.note : "Explore premium picks"}
+                </div>
+              </div>
+
+              {/* RIGHT: ARROW */}
+              <div className="catGo" aria-hidden="true">
+                →
+              </div>
             </button>
           ))}
         </div>
       ) : (
-        /* EMPTY STATE */
         <div
           style={{
             marginTop: 48,
@@ -128,6 +139,105 @@ export default function CategoryGrid({ cats, onOpenCategory }) {
           `}</style>
         </div>
       )}
+
+      <style>{`
+        .catsRow{
+          gap: 12px;
+          padding-bottom: 6px;
+        }
+
+        .catCardMini{
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          width: min(460px, 86vw);
+          min-width: 320px;
+          padding: 12px 12px;
+          border-radius: 18px;
+          border: 1px solid rgba(73, 54, 40, 0.10);
+          background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(214,192,179,0.18));
+          box-shadow: 0 14px 40px rgba(73, 54, 40, 0.10);
+          cursor: pointer;
+          transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+          text-align: left;
+        }
+
+        .catCardMini:hover{
+          transform: translateY(-3px);
+          box-shadow: 0 18px 55px rgba(73, 54, 40, 0.14);
+          border-color: rgba(171, 136, 109, 0.24);
+        }
+
+        .catDpWrap{
+          width: 52px;
+          height: 52px;
+          border-radius: 999px;
+          padding: 2px;
+          background: radial-gradient(60% 60% at 30% 20%, rgba(214,192,179,0.8), rgba(171,136,109,0.35));
+          box-shadow: 0 10px 22px rgba(73, 54, 40, 0.16);
+          flex: 0 0 auto;
+        }
+
+        .catDp{
+          width: 100%;
+          height: 100%;
+          border-radius: 999px;
+          object-fit: cover;
+          display: block;
+          border: 1px solid rgba(255,255,255,0.65);
+          filter: saturate(0.95) contrast(1.02);
+        }
+
+        .catText{
+          min-width: 0;
+          flex: 1 1 auto;
+        }
+
+        .catNameRow{
+          font-weight: 900;
+          color: #493628;
+          letter-spacing: -0.01em;
+          font-size: 15.5px;
+          line-height: 1.2;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .catNoteRow{
+          margin-top: 4px;
+          color: rgba(73, 54, 40, 0.72);
+          font-size: 12.8px;
+          line-height: 1.35;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .catGo{
+          width: 36px;
+          height: 36px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          background: rgba(214, 192, 179, 0.55);
+          color: #493628;
+          font-weight: 900;
+          flex: 0 0 auto;
+        }
+
+        @media (max-width: 560px){
+          .catCardMini{
+            min-width: 280px;
+            padding: 11px;
+          }
+          .catDpWrap{
+            width: 48px;
+            height: 48px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

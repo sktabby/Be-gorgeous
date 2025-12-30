@@ -29,8 +29,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-  console.log("FEATURED:", featured);
-}, [featured]);
+  (async () => {
+    const f = await listFeatured(6);
+    console.log("FEATURED FROM DB:", f);
+    setFeatured(f);
+  })();
+}, []);
+
 
 
   return (
