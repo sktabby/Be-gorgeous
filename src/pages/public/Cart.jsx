@@ -1,16 +1,22 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { getCart, updateQty, clearCart } from "../../store/cart.store.js";
-import { openWhatsAppOrder } from "../../services/whatsapp.service.js"; // ✅ adjust path if needed
+import { openWhatsAppOrder } from "../../services/whatsapp.service.js";
+
+// 🔥 Firestore analytics logging
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../../app/firebase/db.js"; // ✅ adjust path if needed
+
+import { ROUTES } from "../../app/routes.js"; // ✅ adjust if your routes file path differs
 
 export default function Cart() {
+  const nav = useNavigate();
   const [items, setItems] = useState(getCart());
 
   const total = useMemo(
     () =>
-      items.reduce(
-        (s, x) => s + Number(x.price || 0) * Number(x.qty || 0),
-        0
-      ),
+      items.reduce((s, x) => s + Number(x.price || 0) * Number(x.qty || 0), 0),
     [items]
   );
 
@@ -23,13 +29,36 @@ export default function Cart() {
     setItems(updateQty(id, qty));
   }
 
-  function onCheckout() {
+  async function onCheckout() {
     const cart = getCart(); // ✅ always get latest cart
+
+    // ✅ Log WhatsApp redirect analytics (non-blocking)
+    addDoc(collection(db, "analytics_events"), {
+      type: "whatsapp_redirect",
+      items: cart.map((x) => ({
+        id: x.id,
+        name: x.name || x.title || "Item",
+        price: Number(x.price || 0),
+        qty: Number(x.qty || 0),
+      })),
+      itemCount: cart.reduce((a, b) => a + Number(b.qty || 0), 0),
+      total: cart.reduce((s, x) => s + Number(x.price || 0) * Number(x.qty || 0), 0),
+      at: serverTimestamp(),
+    }).catch(console.error);
+
+    // ✅ Redirect to WhatsApp
     openWhatsAppOrder(cart);
 
     // ✅ optional: clear cart after opening WhatsApp
     // clearCart();
     // setItems([]);
+    // nav(ROUTES.HOME);
+  }
+
+  function onClear() {
+    clearCart();
+    setItems([]);
+    nav(ROUTES.HOME); // ✅ redirect home after clearing
   }
 
   return (
@@ -39,13 +68,7 @@ export default function Cart() {
           <h2 className="h2">Cart</h2>
           <p className="p">Your selected items.</p>
         </div>
-        <button
-          className="btn ghost"
-          onClick={() => {
-            clearCart();
-            setItems([]);
-          }}
-        >
+        <button className="btn ghost" onClick={onClear}>
           Clear
         </button>
       </div>
@@ -73,6 +96,8 @@ export default function Cart() {
                   <button
                     className="qtyBtn"
                     onClick={() => change(x.id, Number(x.qty || 0) - 1)}
+                    disabled={Number(x.qty || 0) <= 1}
+                    title={Number(x.qty || 0) <= 1 ? "Minimum 1" : "Decrease"}
                   >
                     −
                   </button>
@@ -102,7 +127,7 @@ export default function Cart() {
             <button
               className="btn primary"
               style={{ width: "100%", marginTop: 12 }}
-              onClick={onCheckout} // ✅ WhatsApp redirect here
+              onClick={onCheckout}
             >
               Checkout
             </button>
