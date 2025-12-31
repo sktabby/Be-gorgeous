@@ -48,3 +48,9 @@ export function updateQty(id, qty) {
 export function clearCart() {
   localStorage.removeItem(KEY);
 }
+
+export function removeFromCart(id) {
+  const cart = getCart().filter((x) => x.id !== id);
+  setCart(cart);
+  return cart;
+}

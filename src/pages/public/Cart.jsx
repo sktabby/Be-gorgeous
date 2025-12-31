@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getCart, updateQty, clearCart } from "../../store/cart.store.js";
+import { getCart, updateQty, clearCart, removeFromCart } from "../../store/cart.store.js";
 import { openWhatsAppOrder } from "../../services/whatsapp.service.js";
 
 // 🔥 Firestore analytics logging
@@ -27,6 +27,10 @@ export default function Cart() {
 
   function change(id, qty) {
     setItems(updateQty(id, qty));
+  }
+
+  function removeItem(id) {
+    setItems(removeFromCart(id));
   }
 
   async function onCheckout() {
@@ -123,7 +127,50 @@ export default function Cart() {
                     >
                       +
                     </button>
+                      <button
+                    type="button"
+                    className="delBtnNice"
+                    onClick={() => removeItem(x.id)}
+                    title="Remove item"
+                    aria-label="Remove item"
+                  >
+                   <svg
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  aria-hidden="true"
+>
+  <path
+    d="M9 3h6"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+  />
+  <path
+    d="M5 6h14"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+  />
+  <path
+    d="M7 6l1 14h8l1-14"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinejoin="round"
+  />
+  <path
+    d="M10 11v6M14 11v6"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+  />
+</svg>
+
+                  </button>
                   </div>
+                
+
                 </div>
               ))}
             </div>
@@ -358,6 +405,62 @@ export default function Cart() {
           .qtyBtnNice{ width: 32px; height: 32px; }
           .sumCheckoutBtn{ padding: 11px 12px; font-size: 13px; }
         }
+          .delBtnNice{
+  width: 38px;
+  height: 38px;
+  border-radius: 20px;
+  border: 1px solid rgba(185, 74, 74, 0.35);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 235, 235, 0.95),
+    rgba(255, 210, 210, 0.85)
+  );
+  color: #9b2c2c; /* classic deep red */
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow:
+    0 10px 22px rgba(155, 44, 44, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  transition:
+    transform .14s ease,
+    box-shadow .14s ease,
+    filter .14s ease,
+    color .14s ease;
+}
+
+.delBtnNice:hover{
+  transform: translateY(-1.5px);
+  color: #7f1d1d;
+  box-shadow:
+    0 16px 34px rgba(155, 44, 44, 0.26),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.delBtnNice:active{
+  transform: translateY(0);
+  box-shadow:
+    0 8px 18px rgba(155, 44, 44, 0.22),
+    inset 0 2px 6px rgba(155, 44, 44, 0.25);
+}
+
+.delBtnNice svg{
+  transition: transform .14s ease;
+}
+
+.delBtnNice:hover svg{
+  transform: scale(1.06);
+}
+
+@media (max-width: 420px){
+  .delBtnNice{
+    width: 36px;
+    height: 36px;
+    border-radius: 13px;
+  }
+}
+
+
       `}</style>
     </div>
   );

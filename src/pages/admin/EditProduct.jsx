@@ -41,16 +41,10 @@ export default function EditProduct() {
         if (!alive) return;
 
         setCats(Array.isArray(c) ? c : []);
-        if (!prod) {
-          setP(null);
-          setMsg("Product not found or you don't have permission.");
-        } else {
-          setP(prod);
-        }
+        setP(prod || null);
       } catch (e) {
         console.error(e);
-        if (!alive) return;
-        setMsg(e?.message || "Failed to load product");
+        if (alive) setMsg(e?.message || "Failed to load product");
       } finally {
         if (alive) setLoading(false);
       }
@@ -67,52 +61,23 @@ export default function EditProduct() {
   async function save() {
     setMsg("");
 
-    // validations
     if (!p.title?.trim()) return setMsg("Enter product title.");
     if (!p.categoryId) return setMsg("Select category.");
     if (!Number.isFinite(Number(p.price)) || Number(p.price) <= 0)
       return setMsg("Enter a valid price.");
 
-    const files = [img1, img2].filter(Boolean);
-    if (files.length > 2) return setMsg("Max 2 images allowed.");
-
-    // file size check
-    const MAX_MB = 8;
-    const tooBig = files.find((f) => f.size > MAX_MB * 1024 * 1024);
-    if (tooBig)
-      return setMsg(
-        `Image "${tooBig.name}" is too large. Max ${MAX_MB}MB allowed.`
-      );
-
     setSaving(true);
     try {
-      // upload new images in parallel (if any)
       let urls = [...existingImages].slice(0, 2);
 
+      const files = [img1, img2].filter(Boolean);
       if (files.length) {
-        setMsg(
-          `Uploading ${files.length} image${files.length > 1 ? "s" : ""}...`
-        );
-
         const newUrls = await Promise.all(
-          files.map((f, idx) =>
-            uploadToCloudinary(f, "begorgeous/products").catch((err) => {
-              throw new Error(
-                `Image ${idx + 1} upload failed: ${err?.message || err}`
-              );
-            })
-          )
+          files.map((f) => uploadToCloudinary(f, "begorgeous/products"))
         );
-
-        // Fill remaining slots up to 2
-        for (const u of newUrls) {
-          if (urls.length < 2) urls.push(u);
-        }
+        for (const u of newUrls) if (urls.length < 2) urls.push(u);
       }
 
-      setMsg("Updating product...");
-
-      // ✅ clean payload only
       const payload = {
         categoryId: p.categoryId,
         title: p.title.trim(),
@@ -126,25 +91,13 @@ export default function EditProduct() {
       };
 
       await updateProduct(productId, payload);
-
-      // clear selected local files
-      setImg1(null);
-      setImg2(null);
-      if (file1Ref.current) file1Ref.current.value = "";
-      if (file2Ref.current) file2Ref.current.value = "";
-
-      // update UI with latest values
       setP((prev) => ({ ...prev, ...payload }));
-
       setMsg("Product updated ✅");
 
-      // ✅ redirect AFTER success (back to products list)
-      setTimeout(() => {
-        nav("/admin/products"); // or use nav(-1)
-      }, 800);
+      setTimeout(() => nav("/admin/products"), 800);
     } catch (e) {
       console.error(e);
-      setMsg(`Error: ${e?.message || "Failed to update product"}`);
+      setMsg(e?.message || "Failed to update product");
     } finally {
       setSaving(false);
     }
@@ -152,106 +105,113 @@ export default function EditProduct() {
 
   return (
     <div>
-      <h2 className="h2">Edit Product</h2>
-      <p className="p">{p.title}</p>
+      {/* HEADER */}
+      <div className="adminHeadRow">
+        <div>
+          <h2 className="h2">Edit Product</h2>
+          <p className="p">{p.title}</p>
+        </div>
+
+        <button
+          className="btn ghost"
+          type="button"
+          onClick={() => nav("/admin/products")}
+          disabled={saving}
+        >
+          Back
+        </button>
+      </div>
 
       <div className="adminFormCard">
         <div className="formGrid2">
-          <select
-            className="input"
-            value={p.categoryId}
-            onChange={(e) => setP({ ...p, categoryId: e.target.value })}
-            disabled={saving}
-          >
-            {cats.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
 
-          <input
-            className="input"
-            value={p.title}
-            onChange={(e) => setP({ ...p, title: e.target.value })}
-            disabled={saving}
-          />
-
-          <input
-            className="input"
-            value={p.price}
-            onChange={(e) => setP({ ...p, price: e.target.value })}
-            disabled={saving}
-          />
-
-          <input
-            className="input"
-            value={p.size || ""}
-            onChange={(e) => setP({ ...p, size: e.target.value })}
-            disabled={saving}
-          />
-
-          <textarea
-            className="input"
-            rows={4}
-            value={p.description || ""}
-            onChange={(e) => setP({ ...p, description: e.target.value })}
-            disabled={saving}
-          />
-
-          <textarea
-            className="input"
-            rows={4}
-            value={p.care || ""}
-            onChange={(e) => setP({ ...p, care: e.target.value })}
-            disabled={saving}
-          />
-
-          {/* current images */}
-          <div className="fileRow" style={{ gap: 12 }}>
-            {(existingImages?.length ? existingImages : ["/sample.png"]).map(
-              (u, i) => (
-                <img
-                  key={u + i}
-                  src={u}
-                  alt={`Product ${i + 1}`}
-                  className="miniImg"
-                  loading="lazy"
-                  style={{
-                    width: 64,
-                    height: 64,
-                    objectFit: "cover",
-                    borderRadius: 12,
-                  }}
-                />
-              )
-            )}
+          {/* CATEGORY */}
+          <div>
+           <div style={{ fontWeight: 900, marginBottom: 6, color: "#000" }}>
+              Category
+            </div>
+            <select
+              className="input"
+              value={p.categoryId}
+              onChange={(e) => setP({ ...p, categoryId: e.target.value })}
+              disabled={saving}
+            >
+              {cats.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="fileRow">
-            <label className="fileBox">
-              <div className="muted">Replace / Add Image 1</div>
-              <input
-                ref={file1Ref}
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImg1(e.target.files?.[0] || null)}
-                disabled={saving}
-              />
-            </label>
-
-            <label className="fileBox">
-              <div className="muted">Replace / Add Image 2</div>
-              <input
-                ref={file2Ref}
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImg2(e.target.files?.[0] || null)}
-                disabled={saving}
-              />
-            </label>
+          {/* TITLE */}
+          <div>
+          <div style={{ fontWeight: 900, marginBottom: 6, color: "#000" }}>
+              Product title
+            </div>
+            <input
+              className="input"
+              value={p.title}
+              onChange={(e) => setP({ ...p, title: e.target.value })}
+              disabled={saving}
+            />
           </div>
 
+          {/* PRICE */}
+          <div>
+            <div style={{ fontWeight: 900, marginBottom: 6, color: "#000" }}>
+              Price
+            </div>
+            <input
+              className="input"
+              value={p.price}
+              onChange={(e) => setP({ ...p, price: e.target.value })}
+              disabled={saving}
+            />
+          </div>
+
+          {/* SIZE */}
+          <div>
+           <div style={{ fontWeight: 900, marginBottom: 6, color: "#000" }}>
+              Size
+            </div>
+            <input
+              className="input"
+              value={p.size || ""}
+              onChange={(e) => setP({ ...p, size: e.target.value })}
+              disabled={saving}
+            />
+          </div>
+
+          {/* DESCRIPTION */}
+          <div>
+           <div style={{ fontWeight: 900, marginBottom: 6, color: "#000" }}>
+              Description
+            </div>
+            <textarea
+              className="input"
+              rows={4}
+              value={p.description || ""}
+              onChange={(e) => setP({ ...p, description: e.target.value })}
+              disabled={saving}
+            />
+          </div>
+
+          {/* CARE */}
+          <div>
+           <div style={{ fontWeight: 900, marginBottom: 6, color: "#000" }}>
+              Care instructions
+            </div>
+            <textarea
+              className="input"
+              rows={4}
+              value={p.care || ""}
+              onChange={(e) => setP({ ...p, care: e.target.value })}
+              disabled={saving}
+            />
+          </div>
+
+          {/* FEATURED */}
           <label className="checkRow">
             <input
               type="checkbox"

@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import ProductCard from "../products/ProductCard";
 
 export default function FeaturedProducts({ featured = [], onGoCart }) {
   // ✅ safety: if featured accidentally comes as null/undefined/not-array
   const safeFeatured = Array.isArray(featured) ? featured : [];
+
+  const LIMIT = 6;
+  const [showAll, setShowAll] = useState(false);
+
+  const hasMore = safeFeatured.length > LIMIT;
+
+  const visibleFeatured = useMemo(() => {
+    return showAll ? safeFeatured : safeFeatured.slice(0, LIMIT);
+  }, [safeFeatured, showAll]);
 
   return (
     <section
@@ -45,21 +54,34 @@ export default function FeaturedProducts({ featured = [], onGoCart }) {
         </span>
       </div>
 
-      {/* ACTION */}
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-        <button
-          className="btn ghost"
-          onClick={onGoCart || (() => {})}
-          disabled={!onGoCart}
-          title={!onGoCart ? "Cart action not connected yet" : "Go to cart"}
-        >
-          Go to cart
-        </button>
-      </div>
+      
+     
 
       {/* PRODUCTS */}
-      <div className="grid3">
-        {safeFeatured.map((p) => (
+      <div
+        className="grid3"
+        style={{
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "clamp(10px, 2vw, 18px)",
+        }}
+      >
+        {/* ✅ mobile: a bit tighter so cards look smaller */}
+       <style>{`
+  @media (max-width: 720px) {
+    #featured .grid3{
+      grid-template-columns: 1fr !important;   /* ✅ 1 card per row */
+      gap: 10px !important;
+    }
+    #featured .grid3 > *{
+      max-width: 360px;                       /* ✅ smaller card feel */
+      width: 100%;
+      margin: 0 auto;                         /* ✅ centered */
+    }
+  }
+`}</style>
+
+
+        {visibleFeatured.map((p) => (
           <ProductCard key={p.id} p={p} />
         ))}
 
@@ -83,6 +105,30 @@ export default function FeaturedProducts({ featured = [], onGoCart }) {
           </div>
         )}
       </div>
+
+      {/* ✅ VIEW MORE / LESS */}
+      {hasMore && (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 18 }}>
+          <button
+            className="btn"
+            type="button"
+            onClick={() => setShowAll((v) => !v)}
+            style={{
+              padding: "10px 18px",
+              borderRadius: 999,
+              border: "1px solid rgba(73, 54, 40, 0.22)",
+              background: "rgba(214, 192, 179, 0.55)",
+              color: "#493628",
+              fontWeight: 800,
+              letterSpacing: "0.01em",
+              boxShadow: "0 10px 24px rgba(73, 54, 40, 0.10)",
+              cursor: "pointer",
+            }}
+          >
+            {showAll ? "View less" : "View more"}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

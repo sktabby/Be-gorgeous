@@ -130,14 +130,19 @@ export async function listByCategory(categoryId, max = 200) {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
-export async function listFeatured(max = 6) {
+export async function listFeatured(max) {
   // ✅ where + orderBy may require composite index (Firestore will show a link)
-  const q = query(
+
+  const base = [
     col,
     where("featured", "==", true),
     orderBy("createdAtMs", "desc"),
-    limit(max)
-  );
+  ];
+
+  const q = Number.isFinite(max)
+    ? query(...base, limit(max))
+    : query(...base); // ✅ no limit => fetch ALL
+
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }

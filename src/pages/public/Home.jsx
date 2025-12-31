@@ -23,14 +23,14 @@ export default function Home() {
       const c = await listCategories();
       setCats(c);
 
-      const f = await listFeatured(6);
+      const f = await listFeatured();
       setFeatured(f);
     })();
   }, []);
 
   useEffect(() => {
   (async () => {
-    const f = await listFeatured(6);
+    const f = await listFeatured();
     console.log("FEATURED FROM DB:", f);
     setFeatured(f);
   })();
