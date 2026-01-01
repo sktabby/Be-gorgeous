@@ -3,7 +3,7 @@ import React from "react";
 const items = [
   {
     t: "Anti-Tarnish Care",
-    d: "Wipe gently after use, avoid perfume/water, and store in a dry pouch. This keeps the coating fresh and the shine intact.",
+    d: "Wipe gently after use, and store in a dry pouch. This keeps the coating fresh and the shine intact.",
   },
   {
     t: "Premium Packaging",

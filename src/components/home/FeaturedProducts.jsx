@@ -99,8 +99,7 @@ export default function FeaturedProducts({ featured = [], onGoCart }) {
           >
             <div style={{ fontWeight: 800, marginBottom: 6 }}>No featured products yet</div>
             <div className="muted" style={{ color: "rgba(73, 54, 40, 0.75)" }}>
-              Add some from <b>Admin → Products</b> (set <b>featured: true</b>), or use the fallback
-              logic in <b>listFeatured()</b> to show latest products automatically.
+              Add some from <b>Admin → Products</b> 
             </div>
           </div>
         )}
