@@ -44,6 +44,9 @@ export default function Dashboard() {
   const [range, setRange] = useState(RANGE.WEEK);
   const [err, setErr] = useState("");
 
+  // ✅ manual refresh trigger
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const [counts, setCounts] = useState({
     products: 0,
     categories: 0,
@@ -96,19 +99,33 @@ export default function Dashboard() {
     );
   }
 
+  function doRefresh() {
+    setErr("");
+    setRefreshKey((k) => k + 1); // ✅ re-run fetch effect
+  }
+
   useEffect(() => {
     (async () => {
       try {
         setErr("");
         setLoading(true);
 
-        // totals
+        // ✅ totals (these already reflect deletes)
         const [p, c] = await Promise.all([
           getCountFromServer(collection(db, "products")),
           getCountFromServer(collection(db, "categories")),
         ]);
 
-        // events (whatsapp redirects)
+        // ✅ fetch current products -> for removing stale analytics items
+        const prodSnap = await getDocs(collection(db, "products"));
+        const existingProductNames = new Set(
+          prodSnap.docs
+            .map((d) => d.data()?.title)
+            .filter(Boolean)
+            .map((t) => String(t).trim())
+        );
+
+        // ✅ events (whatsapp redirects)
         const base = collection(db, "analytics_events");
 
         // NOTE: may need composite index (type + at) when rangeStart is used.
@@ -123,7 +140,7 @@ export default function Dashboard() {
         const snap = await getDocs(qEvents);
         const events = snap.docs.map((d) => d.data());
 
-        // Trend by day
+        // Trend by day (trend stays valid, even if some products were deleted)
         const dayMap = new Map();
         events.forEach((e) => {
           const ts = e.at?.toDate ? e.at.toDate() : null;
@@ -160,12 +177,15 @@ export default function Dashboard() {
           return list;
         };
 
-        // Top product by qty in events (for selected range)
+        // ✅ Top product by qty in events (ONLY if product still exists)
         const prodCounts = new Map();
         events.forEach((e) => {
           const items = Array.isArray(e.items) ? e.items : [];
           items.forEach((it) => {
-            const name = it.name || "Unknown";
+            const rawName = it.name || "Unknown";
+            const name = String(rawName).trim();
+            if (!existingProductNames.has(name)) return; // ✅ ignore deleted products
+
             const qty = Number(it.qty || 1);
             prodCounts.set(name, (prodCounts.get(name) || 0) + qty);
           });
@@ -191,11 +211,11 @@ export default function Dashboard() {
         setLoading(false);
       }
     })();
-  }, [range, rangeStart]);
+  }, [range, rangeStart, refreshKey]);
 
   return (
     <div>
-      {/* ✅ Premium header + chips */}
+      {/* ✅ Premium header + chips + refresh */}
       <div
         style={{
           display: "flex",
@@ -218,7 +238,35 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          <button
+            onClick={doRefresh}
+            disabled={loading}
+            style={{
+              borderRadius: 999,
+              padding: "7px 12px",
+              fontWeight: 900,
+              letterSpacing: "-0.01em",
+              border: "1px solid rgba(171, 136, 109, 0.22)",
+              background: "rgba(255,255,255,0.80)",
+              color: "#493628",
+              boxShadow: "0 10px 22px rgba(73, 54, 40, 0.08)",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.6 : 1,
+              whiteSpace: "nowrap",
+            }}
+            title="Refresh analytics"
+          >
+            {loading ? "Refreshing…" : "Refresh"}
+          </button>
+
           {[
             { k: RANGE.TODAY, t: "Today" },
             { k: RANGE.WEEK, t: "7 days" },
@@ -268,23 +316,19 @@ export default function Dashboard() {
         </div>
       ) : null}
 
-      {/* ✅ ONE premium container (desktop fixed height) */}
-
-       <div
-  style={{
-    borderRadius: 22,
-    border: "1px solid rgba(171,136,109,0.22)",
-    background: "rgba(255,255,255,0.75)",
-    backdropFilter: "blur(12px)",
-    WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 22px 60px rgba(73,54,40,0.12)",
-    padding: 14,
-    maxHeight: 620,   // 👈 CURRENT
-    overflow: "auto",
-  }}
->
-
-        {/* ✅ premium stat + top product cards */}
+      <div
+        style={{
+          borderRadius: 22,
+          border: "1px solid rgba(171,136,109,0.22)",
+          background: "rgba(255,255,255,0.75)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          boxShadow: "0 22px 60px rgba(73,54,40,0.12)",
+          padding: 14,
+          maxHeight: 620,
+          overflow: "auto",
+        }}
+      >
         <div
           style={{
             display: "grid",
@@ -308,7 +352,7 @@ export default function Dashboard() {
                 ? "Calculating…"
                 : topProduct
                 ? `Qty ordered: ${topProduct.qty}`
-                : "No product data logged",
+                : "No product data logged (or top product was deleted)",
               wide: true,
             },
           ].map((x) => (
@@ -363,7 +407,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* ✅ Bar chart only */}
         <div
           style={{
             borderRadius: 18,
@@ -423,28 +466,6 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-
-      {/* ✅ Mobile behavior + nicer scrollbar */}
-      <style>{`
-        @media (max-width: 720px){
-          /* let it grow naturally on mobile */
-          div[style*="max-height: 520px"]{
-            max-height: none !important;
-            overflow: visible !important;
-          }
-        }
-
-        div[style*="max-height: 520px"]::-webkit-scrollbar{ width: 10px; }
-        div[style*="max-height: 520px"]::-webkit-scrollbar-thumb{
-          background: rgba(171, 136, 109, 0.35);
-          border-radius: 999px;
-          border: 3px solid rgba(255,255,255,0.55);
-        }
-        div[style*="max-height: 520px"]::-webkit-scrollbar-track{
-          background: rgba(214, 192, 179, 0.10);
-          border-radius: 999px;
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getCart, updateQty, clearCart, removeFromCart } from "../../store/cart.store.js";
+import { getCart, updateQty, clearCart, removeFromCart, setCart } from "../../store/cart.store.js";
 import { openWhatsAppOrder } from "../../services/whatsapp.service.js";
 
 // 🔥 Firestore analytics logging
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, doc, getDoc } from "firebase/firestore";
 import { db } from "../../app/firebase/db.js"; // ✅ adjust path if needed
 
 import { ROUTES } from "../../app/routes.js"; // ✅ adjust if your routes file path differs
@@ -33,14 +33,54 @@ export default function Cart() {
     setItems(removeFromCart(id));
   }
 
-  async function onCheckout() {
-    const cart = getCart(); // ✅ always get latest cart
+  // ✅ helper: validate products exist (removes deleted ones)
+  async function filterExistingProducts(cart) {
+    const safe = Array.isArray(cart) ? cart : [];
+    if (!safe.length) return { cleaned: [], removed: 0 };
 
-    // ✅ Log WhatsApp redirect analytics (non-blocking)
+    const checks = await Promise.all(
+      safe.map(async (x) => {
+        try {
+          const id = String(x?.id || "");
+          if (!id) return { ok: false };
+          const snap = await getDoc(doc(db, "products", id));
+          return { ok: snap.exists(), id };
+        } catch {
+          return { ok: false };
+        }
+      })
+    );
+
+    const existsSet = new Set(checks.filter((c) => c.ok).map((c) => c.id));
+    const cleaned = safe.filter((x) => existsSet.has(String(x?.id || "")));
+    const removed = safe.length - cleaned.length;
+
+    return { cleaned, removed };
+  }
+
+  async function onCheckout() {
+    let cart = getCart(); // ✅ always get latest cart
+
+    // ✅ remove items that no longer exist in Firestore
+    const { cleaned, removed } = await filterExistingProducts(cart);
+
+    if (removed > 0) {
+      setCart(cleaned);
+      setItems(cleaned);
+      cart = cleaned;
+      alert(`${removed} item(s) were removed because the product no longer exists.`);
+    }
+
+    if (!cart.length) {
+      alert("Cart is empty!");
+      return;
+    }
+
+    // ✅ Log WhatsApp redirect analytics (non-blocking) — includes productId
     addDoc(collection(db, "analytics_events"), {
       type: "whatsapp_redirect",
       items: cart.map((x) => ({
-        id: x.id,
+        id: String(x.id || ""), // ✅ IMPORTANT: productId
         name: x.name || x.title || "Item",
         price: Number(x.price || 0),
         qty: Number(x.qty || 0),
@@ -50,7 +90,7 @@ export default function Cart() {
       at: serverTimestamp(),
     }).catch(console.error);
 
-    // ✅ Redirect to WhatsApp
+    // ✅ Redirect to WhatsApp (use cleaned cart)
     openWhatsAppOrder(cart);
 
     // ✅ optional: clear cart after opening WhatsApp
@@ -127,50 +167,47 @@ export default function Cart() {
                     >
                       +
                     </button>
-                      <button
-                    type="button"
-                    className="delBtnNice"
-                    onClick={() => removeItem(x.id)}
-                    title="Remove item"
-                    aria-label="Remove item"
-                  >
-                   <svg
-  width="16"
-  height="16"
-  viewBox="0 0 24 24"
-  fill="none"
-  aria-hidden="true"
->
-  <path
-    d="M9 3h6"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-  />
-  <path
-    d="M5 6h14"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-  />
-  <path
-    d="M7 6l1 14h8l1-14"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinejoin="round"
-  />
-  <path
-    d="M10 11v6M14 11v6"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-  />
-</svg>
-
-                  </button>
+                    <button
+                      type="button"
+                      className="delBtnNice"
+                      onClick={() => removeItem(x.id)}
+                      title="Remove item"
+                      aria-label="Remove item"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M9 3h6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M5 6h14"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M7 6l1 14h8l1-14"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M10 11v6M14 11v6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                
-
                 </div>
               ))}
             </div>
@@ -379,7 +416,6 @@ export default function Cart() {
           line-height: 1.55;
         }
 
-        /* ✅ Desktop: still inside one card, but 2 columns inside */
         @media (min-width: 900px){
           .cartCard{ padding: 18px; }
           .cartInner{
@@ -393,7 +429,6 @@ export default function Cart() {
           }
         }
 
-        /* ✅ Mobile tighter */
         @media (max-width: 420px){
           .cartCard{ padding: 14px; border-radius: 20px; }
           .cartItemNice{
@@ -405,62 +440,61 @@ export default function Cart() {
           .qtyBtnNice{ width: 32px; height: 32px; }
           .sumCheckoutBtn{ padding: 11px 12px; font-size: 13px; }
         }
+
+        .delBtnNice{
+          width: 38px;
+          height: 38px;
+          border-radius: 20px;
+          border: 1px solid rgba(185, 74, 74, 0.35);
+          background: linear-gradient(
+            180deg,
+            rgba(255, 235, 235, 0.95),
+            rgba(255, 210, 210, 0.85)
+          );
+          color: #9b2c2c;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          box-shadow:
+            0 10px 22px rgba(155, 44, 44, 0.18),
+            inset 0 1px 0 rgba(255,255,255,0.6);
+          transition:
+            transform .14s ease,
+            box-shadow .14s ease,
+            filter .14s ease,
+            color .14s ease;
+        }
+
+        .delBtnNice:hover{
+          transform: translateY(-1.5px);
+          color: #7f1d1d;
+          box-shadow:
+            0 16px 34px rgba(155, 44, 44, 0.26),
+            inset 0 1px 0 rgba(255,255,255,0.7);
+        }
+
+        .delBtnNice:active{
+          transform: translateY(0);
+          box-shadow:
+            0 8px 18px rgba(155, 44, 44, 0.22),
+            inset 0 2px 6px rgba(155, 44, 44, 0.25);
+        }
+
+        .delBtnNice svg{
+          transition: transform .14s ease;
+        }
+
+        .delBtnNice:hover svg{
+          transform: scale(1.06);
+        }
+
+        @media (max-width: 420px){
           .delBtnNice{
-  width: 38px;
-  height: 38px;
-  border-radius: 20px;
-  border: 1px solid rgba(185, 74, 74, 0.35);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 235, 235, 0.95),
-    rgba(255, 210, 210, 0.85)
-  );
-  color: #9b2c2c; /* classic deep red */
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  box-shadow:
-    0 10px 22px rgba(155, 44, 44, 0.18),
-    inset 0 1px 0 rgba(255,255,255,0.6);
-  transition:
-    transform .14s ease,
-    box-shadow .14s ease,
-    filter .14s ease,
-    color .14s ease;
-}
-
-.delBtnNice:hover{
-  transform: translateY(-1.5px);
-  color: #7f1d1d;
-  box-shadow:
-    0 16px 34px rgba(155, 44, 44, 0.26),
-    inset 0 1px 0 rgba(255,255,255,0.7);
-}
-
-.delBtnNice:active{
-  transform: translateY(0);
-  box-shadow:
-    0 8px 18px rgba(155, 44, 44, 0.22),
-    inset 0 2px 6px rgba(155, 44, 44, 0.25);
-}
-
-.delBtnNice svg{
-  transition: transform .14s ease;
-}
-
-.delBtnNice:hover svg{
-  transform: scale(1.06);
-}
-
-@media (max-width: 420px){
-  .delBtnNice{
-    width: 36px;
-    height: 36px;
-    border-radius: 13px;
-  }
-}
-
-
+            width: 36px;
+            height: 36px;
+            border-radius: 13px;
+          }
+        }
       `}</style>
     </div>
   );
