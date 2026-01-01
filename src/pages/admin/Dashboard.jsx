@@ -237,6 +237,77 @@ export default function Dashboard() {
             Analytics from WhatsApp checkout clicks.
           </p>
         </div>
+<button
+  onClick={doRefresh}
+  disabled={loading}
+  title="Refresh analytics"
+  style={{
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+
+    borderRadius: 999,
+    padding: "8px 14px",
+    fontWeight: 900,
+    letterSpacing: "-0.01em",
+
+    border: "1px solid rgba(171, 136, 109, 0.28)",
+    background: loading
+      ? "linear-gradient(180deg, rgba(240,235,230,0.9), rgba(225,215,205,0.85))"
+      : "linear-gradient(180deg, rgba(255,255,255,0.95), rgba(214,192,179,0.30))",
+
+    color: "#493628",
+
+    boxShadow: loading
+      ? "0 8px 18px rgba(73, 54, 40, 0.10)"
+      : "0 14px 30px rgba(73, 54, 40, 0.16)",
+
+    cursor: loading ? "not-allowed" : "pointer",
+    opacity: loading ? 0.7 : 1,
+    whiteSpace: "nowrap",
+
+    transition:
+      "transform .14s ease, box-shadow .14s ease, filter .14s ease",
+  }}
+  onMouseEnter={(e) => {
+    if (loading) return;
+    e.currentTarget.style.transform = "translateY(-1px)";
+    e.currentTarget.style.boxShadow =
+      "0 18px 38px rgba(73, 54, 40, 0.22)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = "translateY(0)";
+    e.currentTarget.style.boxShadow = loading
+      ? "0 8px 18px rgba(73, 54, 40, 0.10)"
+      : "0 14px 30px rgba(73, 54, 40, 0.16)";
+  }}
+>
+  {/* Icon */}
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    style={{
+      animation: loading ? "spin 1.1s linear infinite" : "none",
+    }}
+  >
+    <path
+      d="M21 12a9 9 0 1 1-2.64-6.36"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M21 3v6h-6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </svg>
+
+  {loading ? "Refreshing…" : "Refresh"}
+</button>
 
         <div
           style={{
@@ -246,26 +317,7 @@ export default function Dashboard() {
             alignItems: "center",
           }}
         >
-          <button
-            onClick={doRefresh}
-            disabled={loading}
-            style={{
-              borderRadius: 999,
-              padding: "7px 12px",
-              fontWeight: 900,
-              letterSpacing: "-0.01em",
-              border: "1px solid rgba(171, 136, 109, 0.22)",
-              background: "rgba(255,255,255,0.80)",
-              color: "#493628",
-              boxShadow: "0 10px 22px rgba(73, 54, 40, 0.08)",
-              cursor: loading ? "not-allowed" : "pointer",
-              opacity: loading ? 0.6 : 1,
-              whiteSpace: "nowrap",
-            }}
-            title="Refresh analytics"
-          >
-            {loading ? "Refreshing…" : "Refresh"}
-          </button>
+          
 
           {[
             { k: RANGE.TODAY, t: "Today" },

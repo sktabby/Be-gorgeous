@@ -56,7 +56,7 @@ export default function PublicLayout() {
                 className="btn ghost"
                 onClick={() => nav(ROUTES.ADMIN_LOGIN)}
               >
-                Add Products
+                Admin
               </button>
 
               {/* PREMIUM CART BUTTON (unchanged) */}
