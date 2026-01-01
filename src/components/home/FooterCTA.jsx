@@ -140,7 +140,7 @@ export default function FooterCTA({ onExplore, onFeatured }) {
           color: "rgba(73, 54, 40, 0.55)",
         }}
       >
-        © {new Date().getFullYear()} BeGorgeous • Crafted with care
+        © {new Date().getFullYear()} BeGorgeous • Developed by ATA minds
       </div>
     </footer>
   );
