@@ -124,7 +124,7 @@ export default function FooterCTA({ onExplore, onFeatured }) {
 
             <div>
               <strong style={{ color: "#493628" }}>Contact</strong>
-              <div>WhatsApp: +91 836977050</div>
+              <div>WhatsApp: +91 8369775050</div>
               <div>Email: begorgeous5050@gmail.com</div>
             </div>
           </div>
